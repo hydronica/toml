@@ -1,3 +1,12 @@
+[![Build Status](https://travis-ci.org/hydronica/toml.svg?branch=master)](https://travis-ci.org/hydronica/toml)
+
+This is a modified and opinionated fork of https://github.com/BurntSushi/toml with the following changes 
+
+- time.Duration is always encoded as a string ("10s" or "10ns")
+- support encoding comments (similiar functionality to https://github.com/pelletier/go-toml.v1)
+  - comments can be added using the comment tag `comment:"a well thought-out comment"`
+  - valid toml can be commented out using the commented tag `commented:"true"`
+
 ## TOML parser and encoder for Go with reflection
 
 TOML stands for Tom's Obvious, Minimal Language. This Go package provides a
@@ -16,17 +25,15 @@ Documentation: https://godoc.org/github.com/BurntSushi/toml
 Installation:
 
 ```bash
-go get github.com/BurntSushi/toml
+go get github.com/hydronica/toml
 ```
 
 Try the toml validator:
 
 ```bash
-go get github.com/BurntSushi/toml/cmd/tomlv
+go get github.com/hydronica/toml/cmd/tomlv
 tomlv some-toml-file.toml
 ```
-
-[![Build Status](https://travis-ci.org/BurntSushi/toml.svg?branch=master)](https://travis-ci.org/BurntSushi/toml) [![GoDoc](https://godoc.org/github.com/BurntSushi/toml?status.svg)](https://godoc.org/github.com/BurntSushi/toml)
 
 ### Testing
 
