@@ -149,7 +149,6 @@ func DecodeReader(r io.Reader, v interface{}) (MetaData, error) {
 // Any type mismatch produces an error. Finding a type that we don't know
 // how to handle produces an unsupported type error.
 func (md *MetaData) unify(data interface{}, rv reflect.Value) error {
-
 	// Special case. Look for a `Primitive` value.
 	if rv.Type() == reflect.TypeOf((*Primitive)(nil)).Elem() {
 		// Save the undecoded data and the key context into the primitive
@@ -170,12 +169,8 @@ func (md *MetaData) unify(data interface{}, rv reflect.Value) error {
 		}
 	}
 
-	// Special case. Handle time.Time values specifically.
-	// TODO: Remove this code when we decide to drop support for Go 1.1.
-	// This isn't necessary in Go 1.2 because time.Time satisfies the encoding
-	// interfaces.
-	if rv.Type().AssignableTo(rvalue(time.Time{}).Type()) {
-		return md.unifyDatetime(data, rv)
+	if rv.Type() == reflect.TypeOf(time.Second) {
+		return md.unifyDuration(data, rv)
 	}
 
 	// Special case. Look for a value satisfying the TextUnmarshaler interface.
@@ -196,6 +191,7 @@ func (md *MetaData) unify(data interface{}, rv reflect.Value) error {
 	if k >= reflect.Int && k <= reflect.Uint64 {
 		return md.unifyInt(data, rv)
 	}
+
 	switch k {
 	case reflect.Ptr:
 		elem := reflect.New(rv.Type().Elem())
@@ -354,6 +350,20 @@ func (md *MetaData) unifyDatetime(data interface{}, rv reflect.Value) error {
 		return nil
 	}
 	return badtype("time.Time", data)
+}
+func (md *MetaData) unifyDuration(data interface{}, rv reflect.Value) error {
+	switch v := data.(type) {
+	case string:
+		d, err := time.ParseDuration(v)
+		if err != nil {
+			return e("invalid time.duration format %s", v)
+		}
+		rv.SetInt(int64(d))
+		return nil
+	case int, int64, int32, int16, int8:
+		return md.unifyInt(data, rv)
+	}
+	return badtype("time.duration", data)
 }
 
 func (md *MetaData) unifyString(data interface{}, rv reflect.Value) error {
