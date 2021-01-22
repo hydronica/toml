@@ -416,20 +416,20 @@ ArrayOfMixedSlices = [[1, 2], ["a", "b"]]
 		"map with comments": {
 			input: struct {
 				Library map[string]interface{} `comment:"a library"`
-			}{map[string]interface{}{"name":"hello", "age": 99}},
+			}{map[string]interface{}{"name": "hello", "age": 99}},
 			wantOutput: "# a library\n[Library]\n  age = 99\n  name = \"hello\"\n",
 		},
 		"2 layer embedded struct with comments": {
 			input: struct {
-					Parent struct {
-						Child struct {
-							Int int `comment:"child int"`
-						} `comment:"child struct"`
-					} `comment:"parent struct"`
-			}	{},
+				Parent struct {
+					Child struct {
+						Int int `comment:"child int"`
+					} `comment:"child struct"`
+				} `comment:"parent struct"`
+			}{},
 			wantOutput: "# parent struct\n[Parent]\n  # child struct\n  [Parent.Child]\n    # child int\n    Int = 0\n",
 		},
-		"commented value":{
+		"commented value": {
 			input: struct {
 				Int int `commented:"true"`
 			}{},
@@ -438,11 +438,11 @@ ArrayOfMixedSlices = [[1, 2], ["a", "b"]]
 		"commented struct": {
 			input: struct {
 				Data struct {
-					Int int `comment:"data count"`
-					Name string 
+					Int  int `comment:"data count"`
+					Name string
 				} `commented:"true"`
 			}{},
-			wantOutput: "#[Data]\n  # data count\n#  Int = 0\n#  Name = \"\"\n",
+			wantOutput: "#[Data]\n  # data count\n  #Int = 0\n  #Name = \"\"\n",
 		},
 		"commented slice": {
 			input: struct {
@@ -453,22 +453,22 @@ ArrayOfMixedSlices = [[1, 2], ["a", "b"]]
 		"commented map": {
 			input: struct {
 				Map map[string]string `commented:"true"`
-			}{Map: map[string]string{"hello":"world"}},
-				wantOutput: "#[Map]\n#  hello = \"world\"\n",
-			},
-			"struct in structs": {
-				input: struct {
-					Parent struct {
-						Child struct {
-							Int int 
-						} `commented:"true"`
-					} `commented:"true"`
-					Cousin struct {
-						Amount time.Duration
-					} 
-			}	{},
-			wantOutput: "#[Parent]\n#  [Parent.Child]\n#    Int = 0\n\n[Cousin]\n  Amount = \"0s\"\n",
-			},
+			}{Map: map[string]string{"hello": "world"}},
+			wantOutput: "#[Map]\n  #hello = \"world\"\n",
+		},
+		"struct in structs": {
+			input: struct {
+				Parent struct {
+					Child struct {
+						Int int
+					} `commented:"true" comment:"child"`
+				} `commented:"true"`
+				Cousin struct {
+					Amount time.Duration
+				}
+			}{},
+			wantOutput: "#[Parent]\n  # child\n  #[Parent.Child]\n    #Int = 0\n\n[Cousin]\n  Amount = \"0s\"\n",
+		},
 	}
 	for label, test := range tests {
 		encodeExpected(t, label, test.input, test.wantOutput, test.wantError)
