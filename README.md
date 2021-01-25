@@ -6,7 +6,7 @@ This is a modified and opinionated fork of https://github.com/BurntSushi/toml wi
 - support encoding comments (similar functionality to https://github.com/pelletier/go-toml.v1)
   - comments can be added using the comment tag `comment:"a well thought-out comment"`
   - valid toml can be commented out using the commented tag `commented:"true"`
-- Only guarantees last two years of golang compatibility (1.8 to current)
+- Only guarantees last two years of golang compatibility (1.10 to current)
 
 ## TOML parser and encoder for Go with reflection
 

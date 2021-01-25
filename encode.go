@@ -260,7 +260,7 @@ func (enc *Encoder) eTable(key Key, rv reflect.Value) {
 	}
 	format := "%s[%s]"
 	if enc.commented {
-		format = "#" + format
+		format = "%s#[%s]"
 	}
 	if len(key) > 0 {
 		enc.wf(format, enc.indentStr(key), key.maybeQuotedAll())
@@ -551,7 +551,7 @@ func (enc *Encoder) keyEqElement(key Key, val reflect.Value) {
 	panicIfInvalidKey(key)
 	format := "%s%s = "
 	if enc.commented {
-		format = "#" + format
+		format = "%s#%s = "
 	}
 	enc.wf(format, enc.indentStr(key), key.maybeQuoted(len(key)-1))
 	enc.eElement(val)
